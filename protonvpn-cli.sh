@@ -524,6 +524,10 @@ function openvpn_connect() {
     fi
   fi
 
+  # ugly fix for OpenVPN 2.3 and below where pull-filter is not recognized and
+  # therefore causes this to break.
+  sed -i 's/pull-filter/#pull-filter/g' $openvpn_config
+  echo "Stripping OpenVPN 2.4+ Directives for Compatibility"
   cp "$openvpn_config" "$config_cache_name"
   echo "Connecting..."
   {
@@ -1538,7 +1542,7 @@ if [ ! -f "$(get_protonvpn_cli_home)/deprecation_warning" ]; then
   echo
   echo "This Version of ProtonVPN-CLI has been deprecated and is no longer maintained by the ProtonVPN Team."
   echo "It is superseded by Version 2. Due to the new version being written in Python, you can't"
-  echo "update it with the --update option. The new version needs to be installed manually." 
+  echo "update it with the --update option. The new version needs to be installed manually."
   echo "For installation instructions, please visit the project page at"
   echo "https://github.com/ProtonVPN/protonvpn-cli-ng"
 fi
